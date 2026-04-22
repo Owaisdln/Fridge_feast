@@ -57,10 +57,11 @@ export default function FridgeFeast() {
       setCurrentRecipe(result)
       // Scroll to recipe
       window.scrollTo({ top: 400, behavior: 'smooth' })
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Generation error details:", error)
       toast({
-        title: "Generation Failed",
-        description: "We couldn't cook up a recipe right now. Please try again.",
+        title: "Chef is Busy",
+        description: error.message || "We couldn't cook up a recipe right now. Please check your connection and try again.",
         variant: "destructive",
       })
     } finally {
