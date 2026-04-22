@@ -25,7 +25,7 @@ Turn your leftovers into legendary meals. Enter what you have, and our AI chef w
 1.  **Initialize git:** `git init`
 2.  **Add files:** `git add .`
 3.  **Commit:** `git commit -m "Initial commit"`
-4.  **Create Repo:** Go to [github.com/new](https://github.com/new) and create a repository. **Do not** initialize with README, License, or gitignore if you want to avoid sync issues.
+4.  **Create Repo:** Go to [github.com/new](https://github.com/new) and create a repository. **Do not** initialize with README, License, or gitignore to avoid conflicts.
 5.  **Link and Push:**
     ```bash
     git remote add origin <YOUR_GITHUB_REPO_URL>
@@ -33,12 +33,20 @@ Turn your leftovers into legendary meals. Enter what you have, and our AI chef w
     git push -u origin main
     ```
 
-### Fixing "failed to push some refs" Error
-If you get an error when pushing, it's usually because the remote repo has files you don't have locally. Fix it with:
+### Troubleshooting Common Git Issues
+
+#### Error: "failed to push some refs"
+This happens if GitHub has files (like a default README) that you don't have locally. Fix it with:
 ```bash
 git pull origin main --rebase
 git push -u origin main
 ```
+
+#### Message: "nothing to commit, working tree clean" / "Your branch is up to date"
+If you see this but your code isn't on GitHub:
+1. Make sure you added the remote: `git remote -v` (should show your GitHub URL).
+2. Try a forced push (only if you are sure): `git push -u origin main --force`
+3. If you just created the repo, ensure you are on the `main` branch: `git checkout -b main` then try pushing again.
 
 ## Deployment with Firebase App Hosting
 
