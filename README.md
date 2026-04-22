@@ -2,6 +2,21 @@
 
 Turn your leftovers into legendary meals. Enter what you have, and our AI chef will do the rest. Built with Next.js, Genkit, and Firebase.
 
+## 💻 Working in VS Code
+
+To work on this project locally in VS Code:
+1. **Download the project**: Use the "Download" or "Export" button in Firebase Studio to get your code as a ZIP file.
+2. **Extract and Open**: Extract the ZIP and open the folder in VS Code.
+3. **Install Dependencies**: Open the terminal in VS Code and run:
+   ```bash
+   npm install
+   ```
+4. **Set up Environment**: Create a `.env` file (see the "Local Development" section below).
+5. **Run the App**: Start the development server:
+   ```bash
+   npm run dev
+   ```
+
 ## 🚀 Getting Started
 
 ### 1. Local Development
@@ -36,15 +51,19 @@ If your app is deployed, it **will not work** until you manually add the API key
 5.  **Type**: Select **Secret** (Required for API keys).
 6.  Redeploy by pushing a small change to GitHub.
 
-## 🛠️ GitHub Push Troubleshooting
+## 🛠️ Troubleshooting
 
+### GitHub Push Errors
 If you get "failed to push some refs":
 1.  `git pull origin main --rebase`
 2.  `git push -u origin main`
 
 If you get "nothing to commit, working tree clean" but GitHub is empty:
-1.  `git remote add origin <YOUR_URL>` (if not already done)
-2.  `git push -u origin main --force`
+1.  `git push -u origin main --force`
+
+### AI Generation Errors
+- **"Chef's Error" in production**: This usually means the `GOOGLE_GENAI_API_KEY` is missing in your deployment dashboard.
+- **404 Model Not Found**: We are using `gemini-1.5-flash`. Ensure your API key has access to this model in Google AI Studio.
 
 ---
 
