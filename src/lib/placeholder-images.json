@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-food",
+      "description": "A fresh green salad with various ingredients",
+      "imageUrl": "https://picsum.photos/seed/fridge-feast-hero/1200/600",
+      "imageHint": "fresh salad"
+    },
+    {
+      "id": "recipe-placeholder",
+      "description": "A delicious plated meal",
+      "imageUrl": "https://picsum.photos/seed/recipe-default/600/400",
+      "imageHint": "gourmet meal"
+    }
+  ]
 }
