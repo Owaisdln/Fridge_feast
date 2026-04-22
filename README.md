@@ -10,7 +10,7 @@ Turn your leftovers into legendary meals. Enter what you have, and our AI chef w
     ```
 
 2.  **Set up environment variables:**
-    Create a `.env` file in the root directory and add your keys:
+    Create a `.env` file in the root directory and add your key:
     ```
     GOOGLE_GENAI_API_KEY=your_api_key_here
     ```
@@ -19,40 +19,31 @@ Turn your leftovers into legendary meals. Enter what you have, and our AI chef w
     ```bash
     npm run dev
     ```
-    Open [http://localhost:9002](http://localhost:9002) with your browser to see the result.
 
 ## Pushing to GitHub
 
-1.  Initialize git:
-    ```bash
-    git init
-    ```
-2.  Add files:
-    ```bash
-    git add .
-    ```
-3.  Commit:
-    ```bash
-    git commit -m "Initial commit from Fridge Feast"
-    ```
-4.  Add your remote:
+1.  **Initialize git:** `git init`
+2.  **Add files:** `git add .`
+3.  **Commit:** `git commit -m "Initial commit"`
+4.  **Create Repo:** Go to [github.com/new](https://github.com/new) and create a repository.
+5.  **Link and Push:**
     ```bash
     git remote add origin <YOUR_GITHUB_REPO_URL>
-    ```
-5.  Push:
-    ```bash
     git branch -M main
     git push -u origin main
     ```
 
-## Deployment
+## Deployment with Firebase App Hosting
 
-This project is configured for **Firebase App Hosting**. 
+To make the AI work after deployment, you **must** configure your API key as a secret:
 
-1.  Ensure your code is pushed to a GitHub repository.
-2.  Go to the [Firebase Console](https://console.firebase.google.com/).
-3.  Select your project and navigate to **App Hosting**.
-4.  Connect your GitHub repository and follow the setup wizard.
-5.  Set your `GOOGLE_GENAI_API_KEY` in the Firebase Console under the App Hosting backend secrets/environment variables.
+1.  Go to the [Firebase Console](https://console.firebase.google.com/).
+2.  Select your project and navigate to **App Hosting**.
+3.  Click on your Backend, go to **Settings** > **Environment Variables**.
+4.  Add a new variable:
+    - **Variable path**: `GOOGLE_GENAI_API_KEY`
+    - **Value**: Your Gemini API Key
+    - **Type**: Select **Secret** (this ensures it's stored securely in Cloud Secret Manager).
+5.  Redeploy your app or trigger a new build by pushing to GitHub.
 
 Created by Owais.

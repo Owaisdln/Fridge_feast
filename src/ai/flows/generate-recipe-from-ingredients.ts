@@ -40,7 +40,12 @@ export type GenerateRecipeFromIngredientsOutput = z.infer<
 export async function generateRecipeFromIngredients(
   input: GenerateRecipeFromIngredientsInput
 ): Promise<GenerateRecipeFromIngredientsOutput> {
-  return generateRecipeFromIngredientsFlow(input);
+  try {
+    return await generateRecipeFromIngredientsFlow(input);
+  } catch (error: any) {
+    console.error('Flow execution failed:', error);
+    throw new Error(error.message || 'Failed to generate recipe');
+  }
 }
 
 const prompt = ai.definePrompt({
@@ -58,7 +63,10 @@ const prompt = ai.definePrompt({
   prompt: `You are a creative chef's assistant. Based on the ingredients provided, generate a delicious and creative recipe. \
   Include a catchy title, a detailed list of ingredients with suggested quantities, and clear, step-by-step cooking instructions.
 
-Ingredients available: {{{ingredients}}}`,
+Ingredients available: 
+{{#each ingredients}}
+- {{{this}}}
+{{/each}}`,
 });
 
 const generateRecipeFromIngredientsFlow = ai.defineFlow(
