@@ -165,7 +165,7 @@ export default function FridgeFeast() {
 
       {/* Footer Branding */}
       <footer className="max-w-6xl mx-auto mt-24 pt-8 border-t border-primary/10 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} Fridge Feast • Powered by Culinary AI</p>
+        <p>© {new Date().getFullYear()} Fridge Feast • Created by The Culinary AI Team • Powered by Culinary AI</p>
       </footer>
     </div>
   )
