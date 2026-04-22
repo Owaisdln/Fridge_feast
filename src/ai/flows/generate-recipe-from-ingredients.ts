@@ -49,15 +49,15 @@ export type RecipeActionResult = {
 export async function generateRecipeFromIngredients(
   input: GenerateRecipeFromIngredientsInput
 ): Promise<RecipeActionResult> {
-  console.log('[RecipeFlow] Starting generation for ingredients:', input.ingredients);
+  console.log('[RecipeFlow] Starting generation for:', input.ingredients);
   
   const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
   
   if (!apiKey) {
-    console.error('[RecipeFlow] CRITICAL: No AI API Key found.');
+    console.error('[RecipeFlow] CRITICAL: No AI API Key found in process.env');
     return {
       success: false,
-      error: 'AI Setup Required: Please add GOOGLE_GENAI_API_KEY to your Environment Variables.'
+      error: 'AI Setup Required: Please add GOOGLE_GENAI_API_KEY to your environment variables (Secrets in Vercel/Firebase).'
     };
   }
 
@@ -68,17 +68,16 @@ export async function generateRecipeFromIngredients(
     }
     return { success: true, data: result };
   } catch (error: any) {
-    console.error('[RecipeFlow] Error encountered:', error);
+    console.error('[RecipeFlow] AI Generation Error:', error);
     
     let userMessage = 'The AI chef is currently unavailable. Please try again soon.';
     
-    // Handle the specific "Model Not Found" or 404 errors with better guidance
     if (error.message?.includes('not found') || error.message?.includes('404')) {
-      userMessage = 'AI Model Error: The selected model (gemini-1.5-flash) was not found. Please ensure your API key has access to this model in AI Studio.';
+      userMessage = 'AI Model Error: The gemini-1.5-flash model was not found. This can happen if the API key is restricted or the model name is mismatched.';
     } else if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('403')) {
-      userMessage = 'AI Authentication Failed: The provided API Key is invalid or expired.';
+      userMessage = 'AI Authentication Failed: Your API Key is invalid.';
     } else if (error.message?.includes('quota') || error.message?.includes('429')) {
-      userMessage = 'The AI chef is at capacity. Please try again in a minute.';
+      userMessage = 'Too many requests. Please wait a moment.';
     }
     
     return { success: false, error: userMessage };
@@ -91,7 +90,7 @@ const prompt = ai.definePrompt({
   input: { schema: GenerateRecipeFromIngredientsInputSchema },
   output: { schema: GenerateRecipeFromIngredientsOutputSchema },
   config: {
-    temperature: 0.8,
+    temperature: 0.7,
   },
   prompt: `You are a world-class creative chef. Based on the ingredients provided, generate a delicious and creative recipe. \
   Include a catchy title, a detailed list of ingredients with suggested quantities, and clear, step-by-step cooking instructions.
@@ -111,7 +110,7 @@ const generateRecipeFromIngredientsFlow = ai.defineFlow(
   async (input) => {
     const { output } = await prompt(input);
     if (!output) {
-      throw new Error('The AI model failed to produce a recipe output.');
+      throw new Error('AI model failed to produce output.');
     }
     return output;
   }
