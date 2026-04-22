@@ -25,13 +25,20 @@ Turn your leftovers into legendary meals. Enter what you have, and our AI chef w
 1.  **Initialize git:** `git init`
 2.  **Add files:** `git add .`
 3.  **Commit:** `git commit -m "Initial commit"`
-4.  **Create Repo:** Go to [github.com/new](https://github.com/new) and create a repository.
+4.  **Create Repo:** Go to [github.com/new](https://github.com/new) and create a repository. **Do not** initialize with README, License, or gitignore if you want to avoid sync issues.
 5.  **Link and Push:**
     ```bash
     git remote add origin <YOUR_GITHUB_REPO_URL>
     git branch -M main
     git push -u origin main
     ```
+
+### Fixing "failed to push some refs" Error
+If you get an error when pushing, it's usually because the remote repo has files you don't have locally. Fix it with:
+```bash
+git pull origin main --rebase
+git push -u origin main
+```
 
 ## Deployment with Firebase App Hosting
 
@@ -44,6 +51,6 @@ To make the AI work after deployment, you **must** configure your API key as a s
     - **Variable path**: `GOOGLE_GENAI_API_KEY`
     - **Value**: Your Gemini API Key
     - **Type**: Select **Secret** (this ensures it's stored securely in Cloud Secret Manager).
-5.  Redeploy your app or trigger a new build by pushing to GitHub.
+5.  **Critical:** After adding the secret, you must trigger a new build (by pushing a small change to GitHub) for the secret to be available to the app.
 
 Created by Owais.
