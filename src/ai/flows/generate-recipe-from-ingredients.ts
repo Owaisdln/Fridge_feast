@@ -37,37 +37,48 @@ export type GenerateRecipeFromIngredientsOutput = z.infer<
   typeof GenerateRecipeFromIngredientsOutputSchema
 >;
 
+/**
+ * Result type for the server action to avoid Next.js production error masking.
+ */
+export type RecipeActionResult = {
+  success: boolean;
+  data?: GenerateRecipeFromIngredientsOutput;
+  error?: string;
+};
+
 export async function generateRecipeFromIngredients(
   input: GenerateRecipeFromIngredientsInput
-): Promise<GenerateRecipeFromIngredientsOutput> {
+): Promise<RecipeActionResult> {
   console.log('[RecipeFlow] Starting generation for ingredients:', input.ingredients);
   
-  // Explicit check for API Key presence to provide better feedback to the user
   const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
   
   if (!apiKey) {
-    console.error('[RecipeFlow] CRITICAL: No AI API Key found in environment variables.');
-    throw new Error('AI Setup Required: Please add GOOGLE_GENAI_API_KEY to your environment variables/secrets.');
+    console.error('[RecipeFlow] CRITICAL: No AI API Key found.');
+    return {
+      success: false,
+      error: 'AI Setup Required: Please add GOOGLE_GENAI_API_KEY to your Vercel/Firebase Environment Variables.'
+    };
   }
 
   try {
     const result = await generateRecipeFromIngredientsFlow(input);
     if (!result || !result.title) {
-      throw new Error('The AI chef returned an empty response.');
+      return { success: false, error: 'The AI chef returned an empty response.' };
     }
-    return result;
+    return { success: true, data: result };
   } catch (error: any) {
     console.error('[RecipeFlow] Error encountered:', error);
     
+    let userMessage = 'The AI chef is currently unavailable. Please try again soon.';
+    
     if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('403')) {
-      throw new Error('AI Authentication Failed: The provided API Key is invalid.');
+      userMessage = 'AI Authentication Failed: The provided API Key is invalid.';
+    } else if (error.message?.includes('quota') || error.message?.includes('429')) {
+      userMessage = 'The AI chef is at capacity. Please try again in a minute.';
     }
     
-    if (error.message?.includes('quota') || error.message?.includes('429')) {
-      throw new Error('The AI chef is at capacity. Please try again in a minute.');
-    }
-    
-    throw new Error(error.message || 'The AI chef is currently unavailable. Please try again soon.');
+    return { success: false, error: userMessage };
   }
 }
 

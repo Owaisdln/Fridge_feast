@@ -16,7 +16,6 @@ export default function FridgeFeast() {
   const [isLoading, setIsLoading] = React.useState(false)
   const { toast } = useToast()
 
-  // Load favorites from local storage
   React.useEffect(() => {
     const saved = localStorage.getItem("fridge-feast-favorites")
     if (saved) {
@@ -28,7 +27,6 @@ export default function FridgeFeast() {
     }
   }, [])
 
-  // Save favorites to local storage
   React.useEffect(() => {
     localStorage.setItem("fridge-feast-favorites", JSON.stringify(favorites))
   }, [favorites])
@@ -54,14 +52,22 @@ export default function FridgeFeast() {
     setIsLoading(true)
     try {
       const result = await generateRecipeFromIngredients({ ingredients })
-      setCurrentRecipe(result)
-      // Scroll to recipe
-      window.scrollTo({ top: 400, behavior: 'smooth' })
+      
+      if (result.success && result.data) {
+        setCurrentRecipe(result.data)
+        window.scrollTo({ top: 400, behavior: 'smooth' })
+      } else {
+        toast({
+          title: "Chef's Error",
+          description: result.error || "An unexpected error occurred.",
+          variant: "destructive",
+        })
+      }
     } catch (error: any) {
-      console.error("Generation error details:", error)
+      console.error("Action failure:", error)
       toast({
-        title: "Chef is Busy",
-        description: error.message || "We couldn't cook up a recipe right now. Please check your connection and try again.",
+        title: "Connection Issue",
+        description: "The server failed to respond. Please check your internet and try again.",
         variant: "destructive",
       })
     } finally {
@@ -92,7 +98,6 @@ export default function FridgeFeast() {
 
   return (
     <div className="min-h-screen pb-20 px-4 md:px-8 bg-background selection:bg-accent selection:text-accent-foreground">
-      {/* Header */}
       <header className="max-w-6xl mx-auto pt-12 pb-16 text-center space-y-4">
         <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-primary text-white shadow-lg mb-4">
           <UtensilsCrossed className="w-8 h-8" />
@@ -106,7 +111,6 @@ export default function FridgeFeast() {
       </header>
 
       <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Sidebar: Entry and Favorites */}
         <div className="lg:col-span-4 space-y-8 order-1">
           <IngredientManager
             ingredients={ingredients}
@@ -140,7 +144,6 @@ export default function FridgeFeast() {
           />
         </div>
 
-        {/* Main Area: Recipe Display */}
         <div className="lg:col-span-8 order-2">
           {currentRecipe ? (
             <RecipeDisplay
@@ -164,7 +167,6 @@ export default function FridgeFeast() {
         </div>
       </main>
 
-      {/* Footer Branding */}
       <footer className="max-w-6xl mx-auto mt-24 pt-8 border-t border-primary/10 text-center text-sm text-muted-foreground">
         <p>© {new Date().getFullYear()} Fridge Feast • Created by Owais • Powered by Culinary AI</p>
       </footer>
