@@ -47,6 +47,14 @@ const prompt = ai.definePrompt({
   name: 'generateRecipeFromIngredientsPrompt',
   input: { schema: GenerateRecipeFromIngredientsInputSchema },
   output: { schema: GenerateRecipeFromIngredientsOutputSchema },
+  config: {
+    safetySettings: [
+      {
+        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+        threshold: 'BLOCK_ONLY_HIGH',
+      },
+    ],
+  },
   prompt: `You are a creative chef's assistant. Based on the ingredients provided, generate a delicious and creative recipe. \
   Include a catchy title, a detailed list of ingredients with suggested quantities, and clear, step-by-step cooking instructions.
 
@@ -61,6 +69,9 @@ const generateRecipeFromIngredientsFlow = ai.defineFlow(
   },
   async (input) => {
     const { output } = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('Chef is busy! No recipe was generated.');
+    }
+    return output;
   }
 );
