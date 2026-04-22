@@ -2,45 +2,44 @@
 
 Turn your leftovers into legendary meals. Enter what you have, and our AI chef will do the rest. Built with Next.js, Genkit, and Firebase.
 
-## Getting Started
+## 🚀 Getting Started
 
+### 1. Local Development
 1.  **Install dependencies:**
     ```bash
     npm install
     ```
-
-2.  **Set up environment variables:**
-    Create a `.env` file in the root directory and add your key:
-    ```
-    GOOGLE_GENAI_API_KEY=your_api_key_here
-    ```
-
-3.  **Run the development server:**
+2.  **Set up your API Key:**
+    - Get an API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+    - Create a `.env` file in the root directory (if it doesn't exist).
+    - Add this line: `GOOGLE_GENAI_API_KEY=your_actual_key_here`
+3.  **Run the app:**
     ```bash
     npm run dev
     ```
 
-## Pushing to GitHub
+### 2. Pushing to GitHub
+1.  `git init`
+2.  `git add .`
+3.  `git commit -m "Initial commit"`
+4.  `git remote add origin <YOUR_GITHUB_REPO_URL>`
+5.  `git branch -M main`
+6.  `git push -u origin main`
 
-1.  **Initialize git:** `git init`
-2.  **Add files:** `git add .`
-3.  **Commit:** `git commit -m "Initial commit"`
-4.  **Create Repo:** Go to [github.com/new](https://github.com/new) and create a repository. **Do not** initialize with README, License, or gitignore to avoid conflicts.
-5.  **Link and Push:**
-    - `git remote add origin <YOUR_GITHUB_REPO_URL>`
-    - `git branch -M main`
-    - `git push -u origin main`
+---
 
-### Troubleshooting "Failed to push"
-If you get an error during push, your GitHub repo might have files you don't have locally. Fix with:
-```bash
-git pull origin main --rebase
-git push -u origin main
-```
+## 🛠️ CRITICAL: Making it work after Deployment
 
-## Deployment Setup (CRITICAL)
+If your app is deployed (e.g., to Vercel or Firebase App Hosting), it **will not work** until you manually add the API key to your provider's dashboard.
 
-The AI will **not work** until you add your API key to your hosting provider's settings.
+### For Vercel (your current link):
+1.  Go to your **Vercel Dashboard**.
+2.  Click on your project: **Fridge_feast**.
+3.  Go to **Settings** > **Environment Variables**.
+4.  **Key**: `GOOGLE_GENAI_API_KEY`
+5.  **Value**: Paste your Gemini API Key.
+6.  Click **Save**.
+7.  **IMPORTANT**: Go to the **Deployments** tab and click "Redeploy" on your latest build for the changes to take effect.
 
 ### For Firebase App Hosting:
 1.  Go to the [Firebase Console](https://console.firebase.google.com/).
@@ -48,13 +47,9 @@ The AI will **not work** until you add your API key to your hosting provider's s
 3.  Click **Add Variable**.
 4.  **Variable path**: `GOOGLE_GENAI_API_KEY`
 5.  **Value**: Your Gemini API Key.
-6.  **Type**: Select **Secret** (Important!).
+6.  **Type**: Select **Secret** (Required for API keys).
 7.  Trigger a new build by pushing a small change to GitHub.
 
-### For Vercel:
-1.  Go to your Project Dashboard on Vercel.
-2.  Go to **Settings** > **Environment Variables**.
-3.  Add `GOOGLE_GENAI_API_KEY` with your API Key value.
-4.  Redeploy your project.
+---
 
 Created by Owais.
