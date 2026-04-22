@@ -57,7 +57,7 @@ export async function generateRecipeFromIngredients(
     console.error('[RecipeFlow] CRITICAL: No AI API Key found.');
     return {
       success: false,
-      error: 'AI Setup Required: Please add GOOGLE_GENAI_API_KEY to your Vercel/Firebase Environment Variables.'
+      error: 'AI Setup Required: Please add GOOGLE_GENAI_API_KEY to your Environment Variables.'
     };
   }
 
@@ -72,8 +72,11 @@ export async function generateRecipeFromIngredients(
     
     let userMessage = 'The AI chef is currently unavailable. Please try again soon.';
     
-    if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('403')) {
-      userMessage = 'AI Authentication Failed: The provided API Key is invalid.';
+    // Handle the specific "Model Not Found" or 404 errors with better guidance
+    if (error.message?.includes('not found') || error.message?.includes('404')) {
+      userMessage = 'AI Model Error: The selected model (gemini-1.5-flash) was not found. Please ensure your API key has access to this model in AI Studio.';
+    } else if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('403')) {
+      userMessage = 'AI Authentication Failed: The provided API Key is invalid or expired.';
     } else if (error.message?.includes('quota') || error.message?.includes('429')) {
       userMessage = 'The AI chef is at capacity. Please try again in a minute.';
     }
@@ -84,6 +87,7 @@ export async function generateRecipeFromIngredients(
 
 const prompt = ai.definePrompt({
   name: 'generateRecipeFromIngredientsPrompt',
+  model: 'googleai/gemini-1.5-flash',
   input: { schema: GenerateRecipeFromIngredientsInputSchema },
   output: { schema: GenerateRecipeFromIngredientsOutputSchema },
   config: {
