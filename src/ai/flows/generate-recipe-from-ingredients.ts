@@ -42,24 +42,29 @@ export async function generateRecipeFromIngredients(
 ): Promise<GenerateRecipeFromIngredientsOutput> {
   console.log('[RecipeFlow] Starting generation for ingredients:', input.ingredients);
   
-  // Basic environment check for logs
-  if (!process.env.GOOGLE_GENAI_API_KEY && !process.env.GEMINI_API_KEY) {
-    console.error('[RecipeFlow] CRITICAL: No AI API Key found in environment variables. Check Firebase App Hosting Secrets.');
+  // Explicit check for API Key presence to provide better feedback to the user
+  const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    console.error('[RecipeFlow] CRITICAL: No AI API Key found in environment variables.');
+    throw new Error('AI Setup Required: Please add GOOGLE_GENAI_API_KEY to your environment variables/secrets.');
   }
 
   try {
     const result = await generateRecipeFromIngredientsFlow(input);
-    console.log('[RecipeFlow] Successfully generated recipe:', result.title);
+    if (!result || !result.title) {
+      throw new Error('The AI chef returned an empty response.');
+    }
     return result;
   } catch (error: any) {
-    console.error('[RecipeFlow] Error encountered:', {
-      message: error.message,
-      stack: error.stack,
-    });
+    console.error('[RecipeFlow] Error encountered:', error);
     
-    // Check for common auth errors
     if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('403')) {
-      throw new Error('AI authentication failed. Please verify your API key in Firebase Secrets.');
+      throw new Error('AI Authentication Failed: The provided API Key is invalid.');
+    }
+    
+    if (error.message?.includes('quota') || error.message?.includes('429')) {
+      throw new Error('The AI chef is at capacity. Please try again in a minute.');
     }
     
     throw new Error(error.message || 'The AI chef is currently unavailable. Please try again soon.');

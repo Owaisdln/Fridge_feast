@@ -27,38 +27,34 @@ Turn your leftovers into legendary meals. Enter what you have, and our AI chef w
 3.  **Commit:** `git commit -m "Initial commit"`
 4.  **Create Repo:** Go to [github.com/new](https://github.com/new) and create a repository. **Do not** initialize with README, License, or gitignore to avoid conflicts.
 5.  **Link and Push:**
-    ```bash
-    git remote add origin <YOUR_GITHUB_REPO_URL>
-    git branch -M main
-    git push -u origin main
-    ```
+    - `git remote add origin <YOUR_GITHUB_REPO_URL>`
+    - `git branch -M main`
+    - `git push -u origin main`
 
-### Troubleshooting Common Git Issues
-
-#### Error: "failed to push some refs"
-This happens if GitHub has files (like a default README) that you don't have locally. Fix it with:
+### Troubleshooting "Failed to push"
+If you get an error during push, your GitHub repo might have files you don't have locally. Fix with:
 ```bash
 git pull origin main --rebase
 git push -u origin main
 ```
 
-#### Message: "nothing to commit, working tree clean" / "Your branch is up to date"
-If you see this but your code isn't on GitHub:
-1. Make sure you added the remote: `git remote -v` (should show your GitHub URL).
-2. Try a forced push (only if you are sure): `git push -u origin main --force`
-3. If you just created the repo, ensure you are on the `main` branch: `git checkout -b main` then try pushing again.
+## Deployment Setup (CRITICAL)
 
-## Deployment with Firebase App Hosting
+The AI will **not work** until you add your API key to your hosting provider's settings.
 
-To make the AI work after deployment, you **must** configure your API key as a secret:
-
+### For Firebase App Hosting:
 1.  Go to the [Firebase Console](https://console.firebase.google.com/).
-2.  Select your project and navigate to **App Hosting**.
-3.  Click on your Backend, go to **Settings** > **Environment Variables**.
-4.  Add a new variable:
-    - **Variable path**: `GOOGLE_GENAI_API_KEY`
-    - **Value**: Your Gemini API Key
-    - **Type**: Select **Secret** (this ensures it's stored securely in Cloud Secret Manager).
-5.  **Critical:** After adding the secret, you must trigger a new build (by pushing a small change to GitHub) for the secret to be available to the app.
+2.  Navigate to **App Hosting** > Your Backend > **Settings** > **Environment Variables**.
+3.  Click **Add Variable**.
+4.  **Variable path**: `GOOGLE_GENAI_API_KEY`
+5.  **Value**: Your Gemini API Key.
+6.  **Type**: Select **Secret** (Important!).
+7.  Trigger a new build by pushing a small change to GitHub.
+
+### For Vercel:
+1.  Go to your Project Dashboard on Vercel.
+2.  Go to **Settings** > **Environment Variables**.
+3.  Add `GOOGLE_GENAI_API_KEY` with your API Key value.
+4.  Redeploy your project.
 
 Created by Owais.
