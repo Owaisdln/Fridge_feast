@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   description: 'Generate creative recipes based on what is in your fridge using AI.',
 };
 
+// Increase the timeout for all routes and actions in this layout to 60 seconds.
+// This is the correct place for this configuration in Next.js 15.
+export const maxDuration = 60;
+
 export default function RootLayout({
   children,
 }: Readonly<{
